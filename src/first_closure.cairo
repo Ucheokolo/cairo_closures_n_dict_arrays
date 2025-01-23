@@ -1,4 +1,7 @@
-use super::dict_as_struct::{UserDatabase, UserDatabaseTrait};
+use core::fmt::{Display, Formatter, Error};
+use core::poseidon::PoseidonTrait;
+use super::{dict_as_struct::{UserDatabase, UserDatabaseTrait}};
+
 
 fn adapt() {
     let x = 8;
@@ -34,6 +37,44 @@ fn dbs() {
     assert!(maria_latest_balance == 0, "Expected 0");
 }
 
+// fn hashes() -> felt252 {
+//     let struct_to_hash = StructForHash{ first: 0, second: 1, third: (1,2), last: false};
+
+//     let hash = PoseidonTrait::new().update_with(struct_to_hash).finalize();
+//     hash
+// }
+
+#[derive(Copy, Drop)]
+struct Point {
+    x: u8,
+    y: felt252,
+}
+
+impl PointDisplay of Display<Point> {
+    fn fmt(self: @Point, ref f: Formatter) -> Result<(), Error> {
+        let str: ByteArray = format!("Point ({}, {})", *self.x, *self.y);
+        f.buffer.append(@str);
+        Result::Ok(())
+    }
+}
+
+fn arrays(a: u128, b: u128, c: u128, d: u128, e: u128) -> Array<u128>{
+    let mut arr = ArrayTrait::<u128>::new();
+    arr.append(a);
+    arr.append(b);
+    arr.append(c);
+    arr.append(d);
+    arr.append(e);
+    let arc = @arr;
+    arr.append(7);
+    let mut arr2 = ArrayTrait::<u128>::new();
+    for i in 0..arr.len() {
+        arr2.append(*arc.at(i));
+        println!("{}", *arr.at(i));
+    };
+    arr2
+}
+
 fn main() {
     let double = |value| value * 2;
     println!("Double of 2 is {}", double(2_u8));
@@ -46,4 +87,8 @@ fn main() {
     adapt();
     closure_type(9);
     dbs();
+    let p = Point {x: 34, y: 'Zenda'};
+    println!("{}", p);
+    arrays(4, 6, 8, 0, 2);
+
 }
